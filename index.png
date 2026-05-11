@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Türkiye 81 İl Rehberi</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f7f6f2;
+    --surface: #ffffff;
+    --surface2: #f0eeea;
+    --border: rgba(0,0,0,0.1);
+    --border2: rgba(0,0,0,0.2);
+    --text: #1a1a1a;
+    --text2: #555;
+    --text3: #888;
+    --accent: #c0392b;
+    --accent-light: #fdecea;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  header { background: var(--accent); color: #fff; padding: 2rem 1.5rem 1.5rem; text-align: center; }
+  header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: -0.5px; }
+  header p { font-size: 1rem; opacity: 0.85; }
+  .controls { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem; position: sticky; top: 0; z-index: 10; }
+  .search-wrap { display: flex; gap: 10px; margin-bottom: 0.75rem; }
+  .search-wrap input { flex: 1; padding: 10px 14px; border: 1px solid var(--border2); border-radius: var(--radius-sm); font-size: 15px; background: var(--bg); color: var(--text); outline: none; }
+  .search-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(192,57,43,0.12); }
+  .region-filter { display: flex; gap: 6px; flex-wrap: wrap; }
+  .rbtn { font-size: 12px; padding: 5px 13px; border: 1px solid var(--border2); border-radius: 20px; background: var(--surface); color: var(--text2); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .rbtn:hover { border-color: var(--accent); color: var(--accent); }
+  .rbtn.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  .count-bar { padding: 0.6rem 1.5rem; font-size: 13px; color: var(--text3); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; padding: 0 1.5rem 2rem; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; cursor: pointer; transition: box-shadow 0.15s, transform 0.12s, border-color 0.15s; }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); transform: translateY(-2px); border-color: var(--accent); }
+  .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .card-icon { font-size: 22px; line-height: 1; }
+  .card-name { font-size: 15px; font-weight: 600; color: var(--text); }
+  .card-region { font-size: 11px; color: var(--text3); margin-bottom: 8px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--surface2); color: var(--text2); }
+  .no-results { text-align: center; padding: 4rem; color: var(--text3); font-size: 16px; grid-column: 1/-1; }
+  /* Modal */
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
+  .overlay.open { display: flex; }
+  .modal { background: var(--surface); border-radius: var(--radius); max-width: 500px; width: 100%; max-height: 88vh; overflow-y: auto; padding: 1.5rem; position: relative; }
+  .modal-close { position: absolute; top: 1rem; right: 1rem; background: var(--surface2); border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-size: 18px; color: var(--text2); display: flex; align-items: center; justify-content: center; }
+  .modal-emoji { font-size: 40px; margin-bottom: 0.5rem; }
+  .modal-title { font-size: 24px; font-weight: 700; margin-bottom: 2px; }
+  .modal-region-label { font-size: 13px; color: var(--accent); font-weight: 500; margin-bottom: 0.75rem; }
+  .modal-desc { font-size: 14px; color: var(--text2); line-height: 1.65; margin-bottom: 1rem; border-left: 3px solid var(--accent); padding-left: 0.75rem; background: var(--accent-light); border-radius: 0 6px 6px 0; padding: 0.6rem 0.75rem; }
+  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 6px; margin-top: 1rem; }
+  .modal ul { list-style: none; }
+  .modal ul li { font-size: 14px; color: var(--text); padding: 4px 0; border-bottom: 1px solid var(--border); display: flex; gap: 8px; }
+  .modal ul li:last-child { border-bottom: none; }
+  .modal ul li::before { content: "›"; color: var(--accent); font-weight: bold; flex-shrink: 0; }
+  .badge-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.5rem; }
+  .badge { font-size: 12px; padding: 3px 10px; border-radius: 20px; background: var(--accent-light); color: var(--accent); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🇹🇷 Türkiye 81 İl Rehberi</h1>
+  <p>Her ilin kültürü, lezzetleri ve gezilecek yerleri</p>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <input type="text" id="search" placeholder="🔍 İl adı veya özellik ara..." oninput="filter()" />
+  </div>
+  <div class="region-filter" id="rfilter"></div>
+</div>
+
+<div class="count-bar" id="count"></div>
+<div class="grid" id="grid"></div>
+
+<div class="overlay" id="overlay" onclick="closeOverlay(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()" title="Kapat">✕</button>
+    <div id="mcontent"></div>
+  </div>
+</div>
+
+<script>
+const cities = [
+  { name:"Adana", region:"Akdeniz", icon:"🌶️", tags:["kebap","narenciye","tarih"], desc:"Türkiye'nin 4. büyük şehri. Sıcak iklimi ve bereketli Çukurova ovası ile ünlüdür.", yemek:["Adana kebap","Şalgam suyu","Bici bici","Kısır"], gezilek:["Taşköprü","Sabancı Merkez Camii","Çukurova Botanik Bahçesi","Anavarza Antik Kenti"], ozellik:["Türkiye'nin narenciye başkenti","Seyhan Nehri kıyısında kurulu","Türkiye'nin önemli tekstil merkezi"] },
+  { name:"Adıyaman", region:"Güneydoğu Anadolu", icon:"🏛️", tags:["Nemrut","tarih","kültür"], desc:"UNESCO Dünya Mirası Nemrut Dağı'na ev sahipliği yapan tarihi şehir.", yemek:["Çiğ köfte","Katmer","Kaburga dolması"], gezilek:["Nemrut Dağı","Perre Antik Kenti","Arsemia","Cendere Köprüsü"], ozellik:["UNESCO Dünya Mirası Nemrut Dağı","Kommagene Krallığı'nın merkezi","Dev heykel başları ile ünlü"] },
+  { name:"Afyonkarahisar", region:"Ege", icon:"🌸", tags:["kaymak","termal","tarih"], desc:"Haşhaş üretimi, kaymak ve termal tesisleriyle ünlü, stratejik öneme sahip şehir.", yemek:["Sütlü lokum","Kaymak","Sucuk","Pişi"], gezilek:["Afyon Kalesi","Frigya Vadisi","Termal tesisler","İscehisar"], ozellik:["Türkiye'nin kaymak başkenti","Kurtuluş Savaşı'nın kritik şehri","Termal turizm merkezi"] },
+  { name:"Ağrı", region:"Doğu Anadolu", icon:"🏔️", tags:["Ağrı Dağı","doğa","kültür"], desc:"Türkiye'nin en yüksek dağı Ağrı Dağı'na (5137m) ev sahipliği yapan sınır şehri.", yemek:["Etli ekmek","Kavut","Tandır kebabı"], gezilek:["Ağrı Dağı (5137m)","İshak Paşa Sarayı","Diyadin Termal Tesisleri","Balık Gölü"], ozellik:["Ağrı Dağı – Türkiye'nin en yüksek zirvesi","İshak Paşa Sarayı muhteşem mimarisi","Nuh'un Gemisi efsanesinin yeri"] },
+  { name:"Aksaray", region:"İç Anadolu", icon:"🌋", tags:["İhlara","doğa","Selçuklu"], desc:"İhlara Vadisi ve Selçuklu eserleriyle öne çıkan İpek Yolu üzerindeki şehir.", yemek:["Tarhana çorbası","Pastırma","Köfte"], gezilek:["İhlara Vadisi (14km)","Selime Katedrali","Sultanhani Kervansarayı","Hasan Dağı"], ozellik:["İpek Yolu güzergahında önemli şehir","İhlara Vadisi 14km uzunluğunda","Selçuklu dönemi kervansarayları"] },
+  { name:"Amasya", region:"Karadeniz", icon:"🍎", tags:["elma","tarih","Pontus"], desc:"Yeşilırmak kıyısındaki tarihi Osmanlı evleri ve kaya mezarlarıyla ünlü. Pontus Krallığı başkenti.", yemek:["Amasya elması","Mantı","Tarhana"], gezilek:["Kaya Mezarları","Yalıboyu Osmanlı Evleri","Amasya Kalesi","Hatuniye Camii"], ozellik:["Pontus Krallığı başkenti","UNESCO geçici listesinde","Elma üretimi ile ünlü"] },
+  { name:"Ankara", region:"İç Anadolu", icon:"🏛️", tags:["başkent","tarih","müze"], desc:"Türkiye Cumhuriyeti'nin başkenti; siyasi, kültürel ve diplomatik merkezi.", yemek:["Ankara tavası","Döner kebap","Baklava"], gezilek:["Anıtkabir","Kocatepe Camii","Ankara Kalesi","Anadolu Medeniyetleri Müzesi"], ozellik:["Türkiye Cumhuriyeti'nin başkenti","Anadolu Medeniyetleri Müzesi – Dünyanın en önemli müzelerinden","Nüfus 5.7 milyon"] },
+  { name:"Antalya", region:"Akdeniz", icon:"🏖️", tags:["turizm","deniz","tarih"], desc:"Türkiye'nin turizm başkenti; yıllık 15 milyonu aşkın turist ağırlıyor.", yemek:["Piyaz","Tahini piyaz","Kabak tatlısı","Şiş kebap"], gezilek:["Kaleiçi (tarihi merkez)","Düden Şelalesi","Perge Antik Kenti","Aspendos Tiyatrosu"], ozellik:["Türkiye turizm başkenti","Turkuaz kıyılar ve Toros Dağları","Yılda 15 milyon+ ziyaretçi"] },
+  { name:"Ardahan", region:"Doğu Anadolu", icon:"🐄", tags:["kaşar","Çıldır Gölü","doğa"], desc:"Türkiye'nin en soğuk şehirlerinden biri; kaşar peyniri ve donduğunda üzerinde at koşulan Çıldır Gölü ile ünlü.", yemek:["Kars kaşarı","Çıldır balığı","Yöresel bal"], gezilek:["Çıldır Gölü","Şeytan Kalesi","Kura Nehri","Posof"], ozellik:["Çıldır Gölü kışın tamamen buz tutar","Kaşar peyniri üretim merkezi","Doğu Anadolu'nun sakin köşesi"] },
+  { name:"Artvin", region:"Karadeniz", icon:"🌿", tags:["doğa","festival","orman"], desc:"Türkiye'nin en yeşil kenti; derin vadileri ve Kafkasör Boğa Güreşi Festivali ile ünlü.", yemek:["Mısır ekmeği","Muhlama","Turşu"], gezilek:["Borcka Karagöl","Şavşat Ormanları","Artvin Kalesi","Kafkasör"], ozellik:["Türkiye'nin en ormanlık ili","Kafkasör Kültür ve Sanat Festivali","Çoruh Nehri rafting"] },
+  { name:"Aydın", region:"Ege", icon:"🫒", tags:["Efes","incir","zeytin"], desc:"Verimli Menderes Ovası, UNESCO Efes Antik Kenti ve dünyaca ünlü Aydın inciri ile tanınan.", yemek:["İncir tatlısı","Zeytinyağlı yaprak sarma","Boyoz"], gezilek:["Efes Antik Kenti","Didim Apollon Tapınağı","Priene","Milet"], ozellik:["UNESCO Efes Antik Kenti","Türkiye incir ihracatı başkenti","Antik Yunan mirasının kalbi"] },
+  { name:"Balıkesir", region:"Marmara", icon:"🐟", tags:["deniz","zeytin","Cunda"], desc:"Hem Ege hem Marmara kıyısına sahip, zeytinyağı ve kıyı turizmiyle öne çıkan şehir.", yemek:["Balık ekmek","Zeytin ezmesi","Balıkesir pidesi"], gezilek:["Ayvalık","Cunda Adası","Erdek","Edremit Körfezi"], ozellik:["Hem Ege hem Marmara kıyısına sahip","Türkiye zeytinyağı üretim merkezi","Cunda'nın Rum mirası"] },
+  { name:"Bartın", region:"Karadeniz", icon:"🌲", tags:["doğa","Küre Dağları","kıyı"], desc:"Küre Dağları Milli Parkı ve Karadeniz kıyısıyla küçük ama doğa açısından zengin şehir.", yemek:["Mısır ekmeği","Kara lahana yemeği","Hamsi"], gezilek:["Küre Dağları Milli Parkı","Bartın Çayı","İnkumu Sahili","Amasra"], ozellik:["Küre Dağları eşsiz doğası","Amasra antik liman kenti","Karadeniz sahil şeridi"] },
+  { name:"Batman", region:"Güneydoğu Anadolu", icon:"🛢️", tags:["petrol","Hasankeyf","nehir"], desc:"Türkiye'nin petrol üretim merkezi; dünya mirası Hasankeyf ve Batman Nehri kıyısında.", yemek:["Çiğ köfte","İçli köfte","Katlama"], gezilek:["Hasankeyf","Malabadi Köprüsü","Batman Barajı"], ozellik:["Türkiye petrol üretim merkezi","Hasankeyf 12.000 yıllık tarihe sahip","Malabadi Köprüsü ortaçağ eseri"] },
+  { name:"Bayburt", region:"Doğu Anadolu", icon:"🏰", tags:["kale","Çoruh","küçük il"], desc:"Türkiye'nin en az nüfuslu ili; ortaçağ kalesi ve Çoruh Nehri ile bilinen küçük şehir.", yemek:["Tirit","Kadayıf dolması","Tutmaç çorbası"], gezilek:["Bayburt Kalesi","Deli Duman Mağarası","Çoruh Nehri"], ozellik:["Türkiye'nin en az nüfuslu ili","Çoruh Nehri rafting rotası","Ortaçağ kalesi"] },
+  { name:"Bilecik", region:"Marmara", icon:"⚔️", tags:["Osmanlı","İnegöl köftesi","tarih"], desc:"Osmanlı İmparatorluğu'nun doğduğu topraklara ev sahipliği yapan tarihi şehir.", yemek:["İnegöl köftesi","Şeftali","Dut pekmezi"], gezilek:["Söğüt – Osmanlı'nın kuruluşu","Lefke Kapısı","İnegöl"], ozellik:["Osmanlı'nın kuruluş yeri Söğüt","İnegöl köftesinin anavatanı","Tarihi ipek yolu güzergahı"] },
+  { name:"Bingöl", region:"Doğu Anadolu", icon:"🍯", tags:["bal","doğa","şelale"], desc:"Ari çiçeklerinden üretilen eşsiz balı ve el değmemiş doğasıyla ünlü sakin şehir.", yemek:["Bingöl balı","Kavut","Kızartma"], gezilek:["Yelesen Şelalesi","Yedisu İlçesi","Solhan","Gayt Şelalesi"], ozellik:["Türkiye'nin en kaliteli balı","El değmemiş dağ doğası","Şelale bolluğu"] },
+  { name:"Bitlis", region:"Doğu Anadolu", icon:"🌺", tags:["Van Gölü","Nemrut Krateri","Ahlat"], desc:"Van Gölü kıyısında, Nemrut Krateri ve Selçuklu mezarlıkları ile tarihi şehir.", yemek:["Otlu peynir","Kavut","Tandır çorbası"], gezilek:["Nemrut Krateri Gölü","Ahlat Selçuklu Mezarlığı","Tatvan","Van Gölü"], ozellik:["Ahlat UNESCO geçici listesinde","Nemrut Krateri doğal harikası","Selçuklu mezar taşları"] },
+  { name:"Bolu", region:"Batı Karadeniz", icon:"🌲", tags:["Abant","mutfak","kayak"], desc:"Abant Gölü, Yedigöller, kayak merkezleri ve Mengen aşçılarıyla ünlü dört mevsim güzel şehir.", yemek:["Mengen mutfağı","Mantar yemekleri","Alabalık"], gezilek:["Abant Gölü","Yedigöller Milli Parkı","Kartalkaya Kayak Merkezi","Göynük"], ozellik:["Türk aşçılığının merkezi Mengen","Yedigöller – muhteşem sonbahar manzarası","Abant Gölü doğal güzelliği"] },
+  { name:"Burdur", region:"Akdeniz", icon:"🦩", tags:["flamingo","Salda","Sagalassos"], desc:"Dünyanın önemli flamingo yaşam alanı Burdur Gölü ve 'Türkiye'nin Maldivleri' Salda Gölü burada.", yemek:["Kuzu tandır","Keşkek","Pöç"], gezilek:["Burdur Gölü","Sagalassos Antik Kenti","Salda Gölü","Kremna"], ozellik:["Salda Gölü – Türkiye'nin Maldivleri","Flamingo göç güzergahı","Sagalassos antik kenti"] },
+  { name:"Bursa", region:"Marmara", icon:"🌿", tags:["İskender","Uludağ","Osmanlı"], desc:"Osmanlı'nın ilk başkenti; İpek Yolu mirası, UNESCO köyü Cumalıkızık ve Uludağ ile ünlü.", yemek:["İskender kebap","Kestane şekeri","Candır","Tahini helvası"], gezilek:["Uludağ","Yeşil Türbe","Kapalıçarşı","Cumalıkızık Köyü"], ozellik:["Osmanlı'nın ilk başkenti","İpek ticaretinin kalbi","UNESCO Cumalıkızık Köyü"] },
+  { name:"Çanakkale", region:"Marmara", icon:"⚓", tags:["Truva","Gelibolu","savaş"], desc:"Dünya savaş tarihi Gelibolu ve UNESCO Truva antik şehriyle dünyaca ünlü.", yemek:["Sardalye","Kumru sandviç","Ezine peyniri"], gezilek:["Truva Antik Kenti","Gelibolu Yarımadası","Assos","Bozcaada"], ozellik:["UNESCO Truva Antik Kenti","Çanakkale Savaşı 1915 anma merkezi","Bozcaada şarabı"] },
+  { name:"Çankırı", region:"İç Anadolu", icon:"🧂", tags:["tuz","Ilgaz","termal"], desc:"Tuz mağaraları, şifalı suları ve Ilgaz Dağı kayak merkezi ile öne çıkan.", yemek:["Tarhana","Keşkek","Saç kavurma"], gezilek:["Tuz Mağarası","Ilgaz Dağı Milli Parkı","Çankırı Kalesi"], ozellik:["Tuz mağarası terapi merkezi","Ilgaz kayak ve doğa parkı","Roma dönemi eserleri"] },
+  { name:"Çorum", region:"Karadeniz", icon:"🫘", tags:["leblebi","Hitit","Hattuşa"], desc:"Hitit medeniyetinin kalbi ve dünyaca ünlü leblebisiyle tanınan tarihi şehir.", yemek:["Leblebi","Çorum pastırması","Pide"], gezilek:["Hattuşa – Hitit Başkenti","Yazılıkaya","Alacahöyük"], ozellik:["UNESCO Hattuşa Dünya Mirası","Hitit medeniyetinin merkezi","Türkiye leblebi başkenti"] },
+  { name:"Denizli", region:"Ege", icon:"🌊", tags:["Pamukkale","termal","Hierapolis"], desc:"Dünyanın harikası Pamukkale travertenleri ve Hierapolis antik şehriyle dünyaca ünlü.", yemek:["Höşmerim","Çökertme kebabı","Bamya çorbası"], gezilek:["Pamukkale Travertenleri","Hierapolis","Laodikeia","Kaklik Mağarası"], ozellik:["UNESCO Pamukkale-Hierapolis","Yılda 2 milyon+ ziyaretçi","Termal turizm cenneti"] },
+  { name:"Diyarbakır", region:"Güneydoğu Anadolu", icon:"🍉", tags:["sur","karpuz","Dicle"], desc:"UNESCO Dünya Mirası bazalt sur duvarları ve dünyaca ünlü karpuzu ile antik şehir.", yemek:["Kaburga dolması","Çiğ köfte","Meftuné","Ciğer sarma"], gezilek:["Diyarbakır Surları","Hasanpaşa Hanı","Hevsel Bahçeleri","Ulu Cami"], ozellik:["UNESCO Diyarbakır Surları ve Hevsel Bahçeleri","Siyah bazalt surlar – dünyanın en uzunu","Dicle Nehri kıyısında"] },
+  { name:"Düzce", region:"Batı Karadeniz", icon:"🏕️", tags:["fındık","rafting","orman"], desc:"Melen Çayı ve derin ormanlarıyla doğa sporlarının merkezi, fındık üretim başkenti.", yemek:["Fındık","Mısır ekmeği","Hamsi","Muhlama"], gezilek:["Melen Çayı","Akçakoca Sahili","Efteni Gölü"], ozellik:["Fındık üretim başkenti","Rafting ve kano sporları","Karadeniz kıyısına yakın"] },
+  { name:"Edirne", region:"Marmara", icon:"🕌", tags:["Selimiye","güreş","köfte"], desc:"Osmanlı'nın ikinci başkenti; Selimiye Camii ve dünyanın en eski spor etkinliği Kırkpınar güreşiyle ünlü.", yemek:["Ciğer tava","Edirne köftesi","Badem ezmesi"], gezilek:["Selimiye Camii","Kırkpınar güreş alanı","Eski Cami","Meriç Nehri"], ozellik:["UNESCO Selimiye Camii","Kırkpınar – dünyanın en eski spor etkinliği","Osmanlı'nın 2. başkenti"] },
+  { name:"Elazığ", region:"Doğu Anadolu", icon:"🍇", tags:["Keban","Harput","üzüm"], desc:"Keban Barajı ve Harput tarihi kalesinin gölgesinde, üzüm ve şarapıyla bilinen şehir.", yemek:["Harput köftesi","Firik çorbası","Tas kebabı"], gezilek:["Keban Barajı","Harput Kalesi","Buzluk Mağarası","Hazar Gölü"], ozellik:["Harput – Anadolu'nun önemli tarih merkezlerinden","Hazar Gölü doğal güzelliği","Keban Barajı gölet turizmi"] },
+  { name:"Erzincan", region:"Doğu Anadolu", icon:"🧀", tags:["tulum peyniri","kayak","termal"], desc:"Tulum peyniri, Ergan Dağı kayak merkezi ve ılıca kaplıcalarıyla bilinen şehir.", yemek:["Tulum peyniri","Cağ kebabı","Pestil"], gezilek:["Ergan Dağı Kayak Merkezi","Kemah Boğazı","Tercan Mama Hatun Kümbeti"], ozellik:["Tulum peynirinin anavatanı","Ergan Kayak Merkezi dünya standartlarında","Mama Hatun Kümbeti Selçuklu eseri"] },
+  { name:"Erzurum", region:"Doğu Anadolu", icon:"🏔️", tags:["cağ kebabı","Palandöken","tarih"], desc:"Dünya standartlarında Palandöken kayak merkezi ve eşsiz cağ kebabıyla ünlü şehir.", yemek:["Cağ kebabı","Kadayıf dolması","Oltu şekeri"], gezilek:["Palandöken Kayak Merkezi","Çifte Minareli Medrese","Erzurum Kalesi","Tortum Şelalesi"], ozellik:["Palandöken – Türkiye'nin en iyi kayak merkezi","Cağ kebabının anavatanı","Tarihi medrese mimarisi"] },
+  { name:"Eskişehir", region:"İç Anadolu", icon:"🎓", tags:["üniversite","lületaşı","kanal"], desc:"İki büyük üniversitesi, lületaşı ve şehir içi kanalıyla genç ve dinamik şehir.", yemek:["Çibörek","Balaban","Eskişehir baklavası"], gezilek:["Odunpazarı Evleri","Sazova Parkı","Porsuk Çayı kanalı","Lületaşı Çarşısı"], ozellik:["UNESCO geçici listesi Odunpazarı","Türkiye lületaşı üretiminin %90'ı buradan","Üniversite şehri – genç nüfus"] },
+  { name:"Gaziantep", region:"Güneydoğu Anadolu", icon:"🍖", tags:["baklava","gastronomi","Zeugma"], desc:"UNESCO Gastronomi Şehri ve dünyanın baklava başkenti; zengin Osmanlı mutfağı mirası.", yemek:["Baklava","Katmer","Lahmacun","Kebap","Beyran çorbası"], gezilek:["Zeugma Mozaik Müzesi","Gaziantep Kalesi","Bakırcılar Çarşısı"], ozellik:["UNESCO Yaratıcı Gastronomi Şehri","Zeugma Müzesi – dünyanın en büyük mozaik koleksiyonu","Baklava tescilli coğrafi işaret"] },
+  { name:"Giresun", region:"Karadeniz", icon:"🍒", tags:["kiraz","fındık","ada"], desc:"Kirazın anavatanı (Latince adı Giresun'dan türemiş) ve siyah fındığıyla dünyaca tanınan.", yemek:["Kuymak","Laz böreği","Turşu","Hamsi tavası"], gezilek:["Giresun Adası","Kümbet Yaylası","Giresun Kalesi"], ozellik:["Kirazın anavatanı – Türkçe 'kiraz' adı Giresun'dan","Siyah fındık en lezzetli çeşit","Ortaçağ kalesi"] },
+  { name:"Gümüşhane", region:"Karadeniz", icon:"🌰", tags:["pestil","Karaca Mağarası","doğa"], desc:"Pestil ve köme ile ünlü, Karaca Mağarası'na ev sahipliği yapan dağlık şehir.", yemek:["Pestil","Köme","Tavuk tava"], gezilek:["Karaca Mağarası","Tomara Şelalesi","Zigana Dağı"], ozellik:["Pestil ve kömenin anavatanı","Karaca Mağarası – sarkıt ve dikitler","Zigana dağ geçidi tarihi güzergah"] },
+  { name:"Hakkari", region:"Güneydoğu Anadolu", icon:"🦅", tags:["dağ","Cilo","sınır"], desc:"Türkiye'nin en sarp ve engebeli ili; Cilo Dağları ve el değmemiş vahşi doğası.", yemek:["Kuzulu pilav","Mırra kahvesi","Tandır ekmeği"], gezilek:["Cilo Dağları","Sat Gölü","Uludere","Yüksekova"], ozellik:["Türkiye'nin en yüksek ortalama rakımlı ili","El değmemiş vahşi dağ doğası","İran ve Irak sınırında"] },
+  { name:"Hatay", region:"Akdeniz", icon:"🫙", tags:["gastronomi","Antakya","Sümela"], desc:"Medeniyetlerin buluşma noktası; UNESCO Gastronomi Şehri ve dünyanın ilk Hristiyan kilisesi.", yemek:["Künefe","Humus","Oruk","Islama köfte","Sıkma"], gezilek:["Antakya Mozaik Müzesi","St. Pierre Kilisesi","Harbiye Şelalesi","Samandağ"], ozellik:["Dünyanın ilk Hristiyan kilisesi St. Pierre","Mozaik müzesi dünyanın en büyüğü","UNESCO Gastronomi Şehri"] },
+  { name:"Iğdır", region:"Doğu Anadolu", icon:"🌸", tags:["Ağrı manzarası","kayısı","Aras"], desc:"Ağrı Dağı'nın en güzel panoramasına sahip, tatlı kayısısı ile ünlü küçük şehir.", yemek:["Kayısı","Tandır ekmeği","Etli pilav"], gezilek:["Ağrı Dağı panoraması","Aras Nehri","Tuzluca Mağaraları"], ozellik:["Ağrı Dağı'nın en güzel panoraması","Iğdır kayısısı eşsiz lezzet","Aras Nehri ören yeri"] },
+  { name:"Isparta", region:"Akdeniz", icon:"🌹", tags:["gül","gül yağı","Eğirdir"], desc:"Türkiye'nin gül başkenti; dünyanın gül yağı üretiminin büyük bölümü bu şehirden.", yemek:["Gül reçeli","Eğirdir balığı","Keşkek"], gezilek:["Eğirdir Gölü","Davraz Kayak Merkezi","Kovada Gölü Milli Parkı","Sagalassos"], ozellik:["Türkiye gül yağı üretiminin %70'i Isparta'dan","Eğirdir Gölü – Türkiye'nin 4. büyük gölü","Gül bahçeleri her yıl Mayıs'ta açar"] },
+  { name:"İstanbul", region:"Marmara", icon:"🕌", tags:["tarih","boğaz","kültür"], desc:"İki kıtaya yayılan, üç imparatorluğa başkentlik etmiş, eşsiz metropol.", yemek:["Balık ekmek","Döner","Lahmacun","Midye dolma","Simit"], gezilek:["Ayasofya","Topkapı Sarayı","Boğaz Köprüleri","Kapalıçarşı","Galata Kulesi"], ozellik:["İki kıtada kurulu tek büyük şehir","Üç imparatorluğa başkentlik etmiş","Yılda 15 milyon+ turist"] },
+  { name:"İzmir", region:"Ege", icon:"⚓", tags:["Ege","kültür","Efes"], desc:"Türkiye'nin üçüncü büyük şehri; modern yaşam ve antik tarihin buluştuğu inci.", yemek:["Boyoz","Kumru","Gevrek","İzmir köftesi"], gezilek:["Efes Antik Kenti","Kordon","Saat Kulesi","Kemeraltı Çarşısı","Çeşme"], ozellik:["Türkiye'nin en yaşanabilir şehirlerinden","İzmir Fuarı 100 yıllık gelenek","Ege kıyı kültürünün merkezi"] },
+  { name:"Kahramanmaraş", region:"Akdeniz", icon:"🍦", tags:["dondurma","biber","tarih"], desc:"Uzayan elastik dondurması ve acı kırmızı biberiyle dünyada tanınan şehir.", yemek:["Maraş dondurması","Tarhana","Pöç kebabı","Cevizli sucuk"], gezilek:["Kahramanmaraş Kalesi","Dulkadiroğlu Camii","Elbistan havzası"], ozellik:["Dünyanın en ünlü elastik dondurması","Türkiye kırmızı biber üretim merkezi","Antik Dulkadiroğulları mimarisi"] },
+  { name:"Karabük", region:"Batı Karadeniz", icon:"⚙️", tags:["Safranbolu","sanayi","Osmanlı"], desc:"UNESCO Dünya Mirası Safranbolu ilçesiyle tanınan sanayi ve kültür kenti.", yemek:["Safran pilavı","Tirit","Şerbet"], gezilek:["Safranbolu Evleri","Cinci Hanı","Tokatlı Kanyonu"], ozellik:["UNESCO Safranbolu Tarihi Şehir Merkezi","Osmanlı konak mimarisinin en güzel örneği","Tokatlı Kanyonu yürüyüş rotası"] },
+  { name:"Karaman", region:"İç Anadolu", icon:"🌾", tags:["Türk dili","tarih","elma"], desc:"Türkçe'nin resmi dil ilan edildiği yer; Binbirkilise ve elma bahçeleriyle ünlü.", yemek:["Elma","Tarhana","Tutmaç çorbası"], gezilek:["Binbirkilise","Alahan Manastırı","Karaman Kalesi"], ozellik:["Türkçe'nin resmi dil ilan edildiği şehir (1277)","Elma bahçeleri ile ünlü","Karamanoğulları beyliği mirası"] },
+  { name:"Kars", region:"Doğu Anadolu", icon:"🧀", tags:["kaşar","Ani harabeleri","Kafkas"], desc:"Ermeni mirası Ani harabeleri ve eşsiz kars gravyer peyniriyle ünlü Kafkas şehri.", yemek:["Kars kaşarı","Bal","Çıldır balığı"], gezilek:["Ani Harabeleri","Kars Kalesi","Sarıkamış Kayak Merkezi","Çıldır Gölü"], ozellik:["UNESCO geçici listesi Ani harabeleri","Kars kaşarı Türkiye'nin en kalitelisi","Rus dönemine ait taş binalar"] },
+  { name:"Kastamonu", region:"Batı Karadeniz", icon:"🌰", tags:["pastırma","Ilgaz","kale"], desc:"Kastamonu pastırması, kestanesi ve Valla Kanyonu ile doğa açısından zengin şehir.", yemek:["Kastamonu pastırması","Bandırma","Cevizli lokum"], gezilek:["Ilgaz Dağı Milli Parkı","Kastamonu Kalesi","Valla Kanyonu"], ozellik:["Türkiye'de şapka reformu ilk Kastamonu'da","Valla Kanyonu nefes kesici manzara","Ilgaz dağ ormanları"] },
+  { name:"Kayseri", region:"İç Anadolu", icon:"🗻", tags:["pastırma","Erciyes","mantı"], desc:"Erciyes Dağı, dünyaca ünlü pastırması ve mantısıyla tarihi ticaret şehri.", yemek:["Pastırma","Sucuk","Mantı","Testi kebabı"], gezilek:["Erciyes Dağı","Kervansaraylar","Hunat Hatun Külliyesi","Sultan Sazlığı"], ozellik:["Türkiye mantı başkenti","Erciyes Kayak Merkezi","Tarihi ticaret kavşağı"] },
+  { name:"Kırıkkale", region:"İç Anadolu", icon:"⚙️", tags:["savunma sanayii","merkez","sanayi"], desc:"Türkiye'nin savunma sanayisinin önemli merkezi; başkente yakın sanayi şehri.", yemek:["Pide","Döner","Tarhana"], gezilek:["Kırıkkale Müzesi","Keskin","Delice Nehri"], ozellik:["Türk savunma sanayisinin merkezi","Ankara'ya yakınlık stratejik önemi","Kızılırmak Nehri kıyısı"] },
+  { name:"Kırklareli", region:"Marmara", icon:"🌿", tags:["Istranca","Trakya","orman"], desc:"Istranca Dağları ormanları ve Trakya bağlarıyla öne çıkan Avrupa yakasının sessiz şehri.", yemek:["Trakya mantarı","Trakya şarabı","Köy yoğurdu"], gezilek:["Istranca Dağları","Demirköy","Dupnica Kanyonu"], ozellik:["Türkiye'nin Avrupa kıtasındaki şehri","Istranca biyoçeşitlik cenneti","Trakya bağ turizmi"] },
+  { name:"Kırşehir", region:"İç Anadolu", icon:"🎶", tags:["Ahilik","müzik","termal"], desc:"Ahilik kültürünün ve Türk halk müziği Kırşehir ekolünün merkezi.", yemek:["Keşkek","Testi kebabı","Höşmerim"], gezilek:["Cacabey Medresesi","Terme Termal","Kaman Kalehöyük"], ozellik:["Ahilik kültürünün merkezi","Kırşehir halk müziği ekolü","Terme kaplıca suları"] },
+  { name:"Kilis", region:"Güneydoğu Anadolu", icon:"🫒", tags:["zeytin","gastronomi","küçük il"], desc:"Türkiye'nin en küçük illerinden; eşsiz mutfağı ve ödüllü zeytinyağıyla tanınan.", yemek:["Kilis tava","Oruk","Zeytinyağlı yemekler"], gezilek:["Ravanda Kalesi","Kilis Müzesi"], ozellik:["Türkiye'nin en küçük illerinden","Kilis zeytinyağı kalitesiyle ödüllü","Suriye sınırında tarihi ticaret noktası"] },
+  { name:"Kocaeli", region:"Marmara", icon:"🏭", tags:["sanayi","İzmit","pişmaniye"], desc:"Türkiye'nin sanayi ve ihracat merkezi; İzmit pişmaniyesi ile lezzetiyle de tanınan.", yemek:["İzmit pişmaniyesi","Karides","Pilaki"], gezilek:["İzmit Körfezi","Kartepe Kayak Merkezi","Hereke","Sapanca Gölü"], ozellik:["Türkiye sanayi üretiminin merkezi","Pişmaniye şekerin anavatanı","Sapanca Gölü İstanbul'un su kaynağı"] },
+  { name:"Konya", region:"İç Anadolu", icon:"🌀", tags:["Mevlana","sema","tarih"], desc:"Mevlana'nın şehri; dünyanın derviş ocağı, sema törenleri ve tahıl ambarı.", yemek:["Etli ekmek","Fırın kebabı","Höşmerim"], gezilek:["Mevlana Müzesi","Alaaddin Camii","Çatalhöyük","Sille Köyü"], ozellik:["UNESCO geçici listesi Mevlana Türbesi","Sema – UNESCO İnsanlığın Sözlü Mirası","Türkiye'nin tahıl ambarı"] },
+  { name:"Kütahya", region:"Ege", icon:"🏺", tags:["çini","seramik","tarih"], desc:"Yüzyıllık çini ve seramik geleneğiyle Türkiye'nin sanat ve zanaatkarlık şehri.", yemek:["Domuz suyuna şerbet","Pelte","Kestane"], gezilek:["Kütahya Kalesi","Çini Müzesi","Aizanoi Antik Kenti"], ozellik:["Türkiye çini üretiminin merkezi","Aizanoi – en iyi korunmuş antik kentlerden","Çini sanatı 500+ yıllık gelenek"] },
+  { name:"Malatya", region:"Doğu Anadolu", icon:"🍑", tags:["kayısı","Aslantepe","Nemrut"], desc:"Dünyanın kayısı başkenti; UNESCO mirası Aslantepe ve Nemrut Dağı'na yakın şehir.", yemek:["Kayısı dolması","Cevizli sucuk","Pöç"], gezilek:["Aslantepe Höyüğü","Nemrut Dağı (yakın)","Battalgazi Eski Şehri"], ozellik:["Dünya kayısı üretiminin %50'si Malatya'dan","Aslantepe Höyüğü UNESCO Dünya Mirası","Tarih boyunca stratejik ticaret şehri"] },
+  { name:"Manisa", region:"Ege", icon:"🌿", tags:["mesir macunu","Sardes","üzüm"], desc:"Mesir macunu festivali ve Lidya Krallığı başkenti Sardes antik kentiyle ünlü.", yemek:["Mesir macunu","Üzüm","Manisa köftesi"], gezilek:["Spil Dağı Milli Parkı","Sardes Antik Kenti","Manisa Müzesi"], ozellik:["UNESCO Mesir Macunu Festivali","Sardes – Lidya Krallığı başkenti","Spil Dağı Milli Parkı"] },
+  { name:"Mardin", region:"Güneydoğu Anadolu", icon:"🏰", tags:["taş evler","Süryani","Mezopotamya"], desc:"Mezopotamya ovasına hakim taş evleri ve çok kültürlü mirası ile büyüleyici şehir.", yemek:["İçli köfte","Tırşık","Mırra kahvesi"], gezilek:["Mardin Eski Şehir","Deyrulzafaran Manastırı","Midyat","Mor Hananyo Manastırı"], ozellik:["UNESCO geçici listesinde","Süryanice yaşayan kültür merkezi","Mezopotamya ovasının eşsiz manzarası"] },
+  { name:"Mersin", region:"Akdeniz", icon:"🍊", tags:["liman","tantuni","Kız Kalesi"], desc:"Türkiye'nin en büyük limanına ev sahipliği yapan, tantunisi ve antik kentleriyle öne çıkan.", yemek:["Tantuni","Çiğ köfte","Mersin pidesi"], gezilek:["Kız Kalesi","Cennet-Cehennem Obrukları","Silifke","Uzuncaburç"], ozellik:["Türkiye'nin en büyük ticaret limanı","Kız Kalesi efsanesi","Kleopatra'nın şehri"] },
+  { name:"Muğla", region:"Ege", icon:"🏛️", tags:["Bodrum","Marmaris","mavi yolculuk"], desc:"Türkiye turizminin cenneti; mavi yolculuğun başladığı yer.", yemek:["Midye dolma","Ispanaklı gözleme","Çökertme kebabı"], gezilek:["Bodrum Kalesi","Marmaris","Ölüdeniz","Dalyan"], ozellik:["Mavi yolculuğun başladığı yer","Ölüdeniz – dünyanın en güzel koylarından","Bodrum antik tiyatrosu"] },
+  { name:"Muş", region:"Doğu Anadolu", icon:"🌸", tags:["lale","Malazgirt","ova"], desc:"Muş Ovası'ndaki yabani lalelerle ve 1071 Malazgirt Savaşı'nın tarihi önemiyle bilinen.", yemek:["Harisa","Kavut","Balık"], gezilek:["Muş Ovası Lale Manzarası","Surp Karapet Manastırı","Malazgirt"], ozellik:["Muş Ovası yabani lale cenneti","1071 Malazgirt Savaşı – tarihin dönüm noktası","El değmemiş doğa"] },
+  { name:"Nevşehir", region:"İç Anadolu", icon:"🪨", tags:["Kapadokya","balon","yeraltı şehri"], desc:"Peri bacaları ve yeraltı şehirleriyle Kapadokya'nın kalbi.", yemek:["Testi kebabı","Çörek","Hürümü tatlısı"], gezilek:["Göreme Milli Parkı","Derinkuyu Yeraltı Şehri","Ürgüp","Uçhisar"], ozellik:["UNESCO Göreme Milli Parkı","Sıcak hava balonu deneyimi","Peri bacaları doğal harikası"] },
+  { name:"Niğde", region:"İç Anadolu", icon:"🏔️", tags:["Hasan Dağı","patates","manastır"], desc:"Hasan Dağı eteklerinde; Eski Gümüşler Manastırı fresk sanatıyla öne çıkan.", yemek:["Patates yemeği","Tarhana","Keşkek"], gezilek:["Eski Gümüşler Manastırı","Ihlara Vadisi (yakın)","Hasan Dağı"], ozellik:["Eski Gümüşler Manastırı eşsiz fresk sanatı","Hasan Dağı tırmanış","Patates üretim merkezi"] },
+  { name:"Ordu", region:"Karadeniz", icon:"🌰", tags:["fındık","Boztepe","yayla"], desc:"Türkiye'nin fındık başkenti; Boztepe manzarası ve yemyeşil yaylaları ile tanınan.", yemek:["Fındık ezmesi","Muhlama","Kara lahana çorbası"], gezilek:["Boztepe","Taşbaşı Kültür Parkı","Ulugöl","Çambaşı Yaylası"], ozellik:["Türkiye fındık üretiminin merkezi","Boztepe – şehrin simgesi manzara noktası","Karadeniz kıyısı"] },
+  { name:"Osmaniye", region:"Akdeniz", icon:"🐦", tags:["Karatepe","doğa","Hitit"], desc:"Karatepe Milli Parkı ve Hitit dönemine ait eserlerle öne çıkan.", yemek:["Kebap","Kazan dibi","Pide"], gezilek:["Karatepe-Aslantaş Açık Hava Müzesi","Toprakkale","Zorkun Yaylası"], ozellik:["Karatepe Hitit dönemi heykelleri","Zorkun Yaylası serinliği","Ceyhan Nehri kıyısı"] },
+  { name:"Rize", region:"Karadeniz", icon:"🍵", tags:["çay","yayla","Ayder"], desc:"Türkiye'nin çay başkenti; dünyanın en çok yağış alan bölgelerinden biri.", yemek:["Rize çayı","Muhlama","Kuymak","Mısır ekmeği"], gezilek:["Ayder Yaylası","Pokut Yaylası","Fırtına Vadisi","Zilkale"], ozellik:["Türkiye çayının neredeyse tamamı Rize'den","Dünyanın en yağışlı bölgelerinden","Ayder Yaylası termal kaynakları"] },
+  { name:"Sakarya", region:"Marmara", icon:"⚔️", tags:["kurtuluş","çilek","doğa"], desc:"Kurtuluş Savaşı'nın kaderini belirleyen muharebeler ve taze çilekleriyle ünlü.", yemek:["Çilek","Adapazarı ıslama köftesi","Muhlama"], gezilek:["Kıyıköy","Sakarya Muharebe alanları","Sapanca Gölü"], ozellik:["Kurtuluş Savaşı'nın kritik muharebesi","Adapazarı ıslama köftesi eşsiz lezzet","Sapanca Gölü doğal güzelliği"] },
+  { name:"Samsun", region:"Karadeniz", icon:"⚓", tags:["Atatürk","19 Mayıs","liman"], desc:"Atatürk'ün Kurtuluş Savaşı'nı başlattığı, Karadeniz'in en büyük liman şehri.", yemek:["Lüfer","Hamsi","Samsun pidesi"], gezilek:["19 Mayıs Anıt Parkı","Bandırma Vapuru Müzesi","Amisos Tepesi","Kızılırmak Deltası"], ozellik:["Kurtuluş Savaşı'nın başladığı şehir (19 Mayıs 1919)","Karadeniz'in en büyük limanı","Karadeniz'in sanayi merkezi"] },
+  { name:"Şanlıurfa", region:"Güneydoğu Anadolu", icon:"🐟", tags:["Göbeklitepe","Balıklıgöl","peygamberler"], desc:"UNESCO Göbeklitepe – insanlık tarihini yeniden yazan tapınak ve 3 semavi dinin izleri.", yemek:["Çiğ köfte","Lahmacun","İçli köfte","Büryan"], gezilek:["Göbeklitepe","Balıklıgöl","Harran","Şanlıurfa Kalesi"], ozellik:["UNESCO Göbeklitepe – Dünyanın en eski tapınağı","Üç dinin peygamberlerinin şehri","Harran – insanlığın ilk şehirlerinden"] },
+  { name:"Siirt", region:"Güneydoğu Anadolu", icon:"🐑", tags:["büryan","fıstık","perde pilavı"], desc:"Eşsiz büryan kebabı ve perde pilavıyla Güneydoğu'nun inci şehri.", yemek:["Büryan kebabı","Perde pilavı","Siirt fıstığı"], gezilek:["Botan Vadisi","Veysel Karani Türbesi","Tillo"], ozellik:["Büryan kebabının anavatanı","Siirt fıstığı – eşsiz lezzet","Botan Vadisi el değmemiş doğa"] },
+  { name:"Sinop", region:"Karadeniz", icon:"⚓", tags:["cezaevi","kale","fiyort"], desc:"Karadeniz'e uzanan yarımadada; tarihi cezaevi ve Türkiye'nin tek fiyorduyla ünlü.", yemek:["Midye dolma","Lüfer","Lakerda"], gezilek:["Sinop Tarihi Cezaevi","Sinop Kalesi","Hamsilos Fiyordu","Akliman Plajı"], ozellik:["Hamsilos – Türkiye'nin tek fiyordu","Karadeniz'in en kuzey noktası","Tarihi cezaevi müzesi"] },
+  { name:"Sivas", region:"İç Anadolu", icon:"🎭", tags:["kongre","Selçuklu","Divriği"], desc:"Kurtuluş Savaşı kongresi ve UNESCO mirası Divriği Ulu Camii ile tarihi şehir.", yemek:["Köfte","Madımak kavurması","Sivas ekmeği"], gezilek:["Sivas Kongresi Binası","Divriği Ulu Camii","Gürün Şelalesi"], ozellik:["UNESCO Divriği Ulu Camii ve Darüşşifası","Kurtuluş Savaşı kongresi 1919","Selçuklu mimarisinin başkenti"] },
+  { name:"Şırnak", region:"Güneydoğu Anadolu", icon:"🌊", tags:["Dicle","Cudi Dağı","sınır"], desc:"Dicle'nin kolları ve Cudi Dağı efsanesiyle bilinen, üç sınıra yakın şehir.", yemek:["Mırra kahvesi","Tandır ekmeği","Kuzu tandır"], gezilek:["Dicle Nehri","Cudi Dağı","Uludere","İdil"], ozellik:["Dicle'nin üst havzası","Nuh'un Gemisi efsanesi Cudi Dağı","İran ve Irak sınırına yakın"] },
+  { name:"Tekirdağ", region:"Marmara", icon:"🍷", tags:["köfte","şarap","Trakya"], desc:"Trakya bağları, şarabı ve dünyaca ünlü köftesiyle öne çıkan Marmara kenti.", yemek:["Tekirdağ köftesi","Rakı","Trakya şarabı"], gezilek:["Rakoczi Müzesi","Namık Kemal Evi","Şarköy sahilleri"], ozellik:["Türk şarap ve rakı üretiminin kalbi","Tekirdağ köftesi coğrafi işaret","Marmara Denizi kıyısı"] },
+  { name:"Tokat", region:"Karadeniz", icon:"🏺", tags:["Tokat kebabı","Ballıca Mağarası","tarih"], desc:"Tarihi Selçuklu eserleri, bez boyama sanatı ve Tokat kebabıyla ünlü.", yemek:["Tokat kebabı","Bamya çorbası","Pestil"], gezilek:["Ballıca Mağarası","Tokat Kalesi","Niksar","Zile Kalesi"], ozellik:["Ballıca Mağarası – Türkiye'nin en büyük mağaralarından","Tokat kebabı tescilli coğrafi işaret","Komnenler döneminden kalma Panaghia Kilisesi"] },
+  { name:"Trabzon", region:"Karadeniz", icon:"⚽", tags:["Sümela","Uzungöl","futbol"], desc:"Sümela Manastırı, Uzungöl ve Trabzonspor ile dünyada tanınan Karadeniz şehri.", yemek:["Kuymak","Hamsi pilavı","Laz böreği","Vakfıkebir ekmeği"], gezilek:["Sümela Manastırı","Uzungöl","Trabzon Ayasofyası","Atatürk Köşkü"], ozellik:["UNESCO geçici listesi Sümela Manastırı","Trabzonspor köklü futbol kültürü","Uzungöl masalsı manzara"] },
+  { name:"Tunceli", region:"Doğu Anadolu", icon:"🦅", tags:["Munzur","doğa","alevi"], desc:"Türkiye'nin en az nüfuslu illerinden; el değmemiş Munzur doğası ve Alevi kültürü.", yemek:["Kuzu kavurma","Yayla çorbası","Bal"], gezilek:["Munzur Vadisi Milli Parkı","Tunceli Kalesi","Pülümür Vadisi"], ozellik:["Türkiye'nin en temiz havası","Alevi kültürünün yaşayan merkezi","Munzur – vahşi nehir vadisi"] },
+  { name:"Uşak", region:"Ege", icon:"🏺", tags:["halı","Karun hazinesi","kanyon"], desc:"Tarihi halı dokuma geleneği ve Karun Hazinesi ile öne çıkan, Ulubey Kanyonu'na ev sahipliği.", yemek:["Güveç","Keşkek","Kavurma"], gezilek:["Ulubey Kanyonu","Uşak Müzesi (Karun Hazinesi)","Blaundus Antik Kenti"], ozellik:["Karun Hazinesi – Dünyanın önemli hazinelerinden","Ulubey Kanyonu muhteşem manzara","Türk halı dokuma sanatı"] },
+  { name:"Van", region:"Doğu Anadolu", icon:"🐱", tags:["Van Gölü","Van kedisi","kahvaltı"], desc:"Van Gölü, eşsiz kahvaltı kültürü ve iki renkli gözlü beyaz Van kedisiyle dünyaca ünlü.", yemek:["Van kahvaltısı","Otlu peynir","İnci kefali","Kavut"], gezilek:["Van Kalesi","Akdamar Kilisesi","Van Gölü","Çavuştepe"], ozellik:["Van kedisi – dünyada nadir beyaz gözlü kedi","Akdamar Kilisesi – 1000 yıllık Ermeni mirası","Van kahvaltısı Türkiye'nin en zengini"] },
+  { name:"Yalova", region:"Marmara", icon:"🌹", tags:["termal","Atatürk","gül"], desc:"İstanbul'a yakınlığı, termal kaynakları ve gülleriyle sayfiye şehri.", yemek:["Balık","Midye","Deniz ürünleri"], gezilek:["Termal Kaplıcaları","Atatürk Köşkü","Gülbahçesi"], ozellik:["Atatürk'ün en sevdiği tatil yeri","İstanbul'a feribot bağlantısı","Termal turizm cenneti"] },
+  { name:"Yozgat", region:"İç Anadolu", icon:"🌲", tags:["Çamlık","orman","tarih"], desc:"Türkiye'nin ilk orman parkı Çamlık Milli Parkı'na ev sahipliği yapan şehir.", yemek:["Tarhana","Yozgat çorbası","Keşkek"], gezilek:["Çamlık Milli Parkı","Alişar Höyüğü","Sarıkaya Termal"], ozellik:["Türkiye'nin ilk milli parkı (1940)","Hitit dönemi Alişar Höyüğü","Sarıkaya termal kaynakları"] },
+  { name:"Zonguldak", region:"Batı Karadeniz", icon:"⛏️", tags:["kömür","Gökgöl Mağarası","deniz"], desc:"Türkiye'nin kömür madenciliği merkezi; Gökgöl Mağarası'nın kristal harikalarına ev sahipliği.", yemek:["Hamsi","Mısır ekmeği","Fındık"], gezilek:["Gökgöl Mağarası","Ereğli sahilleri","Çaycuma"], ozellik:["Türkiye taş kömürü üretiminin merkezi","Gökgöl Mağarası – kristal oluşumları","Karadeniz kıyısı"] },
+];
+
+const regions = ["Tümü", ...new Set(cities.map(c => c.region))].sort((a,b) => a==="Tümü"?-1:b==="Tümü"?1:a.localeCompare(b,"tr"));
+let activeRegion = "Tümü";
+
+function init() {
+  const rf = document.getElementById("rfilter");
+  regions.forEach(r => {
+    const btn = document.createElement("button");
+    btn.className = "rbtn" + (r === "Tümü" ? " active" : "");
+    btn.textContent = r;
+    btn.onclick = () => { activeRegion = r; document.querySelectorAll(".rbtn").forEach(b => b.classList.remove("active")); btn.classList.add("active"); render(); };
+    rf.appendChild(btn);
+  });
+  render();
+}
+
+function render() {
+  const q = document.getElementById("search").value.toLowerCase().trim();
+  const filtered = cities.filter(c => {
+    const regionOk = activeRegion === "Tümü" || c.region === activeRegion;
+    const queryOk = !q || c.name.toLowerCase().includes(q) || c.region.toLowerCase().includes(q) || c.tags.some(t => t.toLowerCase().includes(q));
+    return regionOk && queryOk;
+  }).sort((a,b) => a.name.localeCompare(b.name,"tr"));
+  const grid = document.getElementById("grid");
+  document.getElementById("count").textContent = `${filtered.length} il gösteriliyor`;
+  grid.innerHTML = "";
+  if (!filtered.length) { grid.innerHTML = '<div class="no-results">🔍 Sonuç bulunamadı.</div>'; return; }
+  filtered.forEach(c => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `<div class="card-header"><span class="card-icon">${c.icon}</span><span class="card-name">${c.name}</span></div><div class="card-region">${c.region} Bölgesi</div><div class="tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>`;
+    card.onclick = () => openModal(c);
+    grid.appendChild(card);
+  });
+}
+
+function openModal(c) {
+  document.getElementById("mcontent").innerHTML = `
+    <div class="modal-emoji">${c.icon}</div>
+    <div class="modal-title">${c.name}</div>
+    <div class="modal-region-label">📍 ${c.region} Bölgesi</div>
+    <div class="modal-desc">${c.desc}</div>
+    <div class="section-title">🍽️ Yöresel Lezzetler</div>
+    <ul>${c.yemek.map(y=>`<li>${y}</li>`).join("")}</ul>
+    <div class="section-title">🗺️ Gezilecek Yerler</div>
+    <ul>${c.gezilek.map(y=>`<li>${y}</li>`).join("")}</ul>
+    <div class="section-title">⭐ Öne Çıkan Özellikler</div>
+    <div class="badge-wrap">${c.ozellik.map(o=>`<span class="badge">${o}</span>`).join("")}</div>
+  `;
+  document.getElementById("overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal() { document.getElementById("overlay").classList.remove("open"); document.body.style.overflow = ""; }
+function closeOverlay(e) { if (e.target === document.getElementById("overlay")) closeModal(); }
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+function filter() { render(); }
+init();
+</script>
+</body>
+</html>
